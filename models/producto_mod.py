@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, LargeBinary
 from sqlalchemy.ext.declarative import declarative_base
 from pydantic import BaseModel
 from typing import Optional
@@ -13,7 +13,7 @@ class Producto(Base):
     id_cat = Column(Integer)
     baja = Column(String(1), nullable=False, default="N")
     descripcion = Column(String(1000))
-    img_product = Column(String(50))
+    img_product = Column(LargeBinary)
 
 class ProductoCreate(BaseModel):
     precios: float
@@ -21,7 +21,7 @@ class ProductoCreate(BaseModel):
     id_cat: int
     baja: Optional[str] = None
     descripcion: str
-    img_product: Optional[str] = None
+    img_product: Optional[bytes] = None
     
 class ProductoUpdate(BaseModel):
     precios: Optional[float] = None
@@ -29,7 +29,7 @@ class ProductoUpdate(BaseModel):
     id_cat: Optional[int] = None
     baja: Optional[str] = None
     descripcion: Optional[str] = None
-    img_product: Optional[str] = None
+    img_product: Optional[bytes] = None
     
 class ResultadoAct(BaseModel):
     message: str

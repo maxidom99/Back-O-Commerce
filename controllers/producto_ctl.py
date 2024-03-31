@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
+from fastapi import UploadFile
 from models.producto_mod import Producto
 from sqlalchemy import or_
 
-def create_product_db(db: Session, precios: float, nombres: str, id_cat: int, baja: str, descripcion: str, img_product: str):
+def create_product_db(db: Session, precios: float, nombres: str, id_cat: int, baja: str, descripcion: str, img_product: bytes):
     new_product_data = {"precios": precios, "nombres": nombres, "id_cat": id_cat, "baja": baja, "descripcion": descripcion, "img_product": img_product}
     new_product = Producto(**new_product_data)
     db.add(new_product)
