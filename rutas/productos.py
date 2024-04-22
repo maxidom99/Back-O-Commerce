@@ -9,6 +9,7 @@ productos = APIRouter()
 @productos.get("/productos")
 async def busqueda_productos(db: Session = Depends(get_db)):
     productos = db.query(Producto).filter(Producto.baja == 'N').all()
+    #productos = db.query(Producto.id,Producto.nombres, Producto.descripcion, Producto.precios).filter(Producto.baja == 'N').all()
     return productos
 
 @productos.get("/productos/{produ_id}")

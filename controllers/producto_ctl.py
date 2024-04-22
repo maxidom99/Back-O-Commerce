@@ -12,7 +12,7 @@ def create_product_db(db: Session, precios: float, nombres: str, id_cat: int, ba
     return new_product
 
 def update_product_db(db: Session, id:int, **data):
-    db_product = db.query(Producto).filter(or_(Producto.id == id), Producto.baja == "N").first()
+    db_product = db.query(Producto).filter(or_(Producto.id == id)).first()
     if db_product:
         for k, v in data.items():
             if v is not None:
