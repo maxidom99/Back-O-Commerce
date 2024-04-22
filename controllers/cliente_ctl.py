@@ -1,9 +1,11 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from models.cliente_mod import Cliente
+import bcrypt
 
 def create_client_db(db: Session, documento: str, nombre: str, apellido: str, e_mail: str, contrasenia: str, baja: str, img_perfil: str):
-    new_client_data = {"documento": documento, "nombre": nombre, "apellido": apellido, "e_mail": e_mail, "contrasenia": contrasenia, "baja": baja, "img_perfil": img_perfil}
+    hashed_password = bcrypt.hashpw(contrasenia.encode('utf-8'), bcrypt.gensalt())
+    new_client_data = {"documento": documento, "nombre": nombre, "apellido": apellido, "e_mail": e_mail, "contrasenia": hashed_password.decode('utf-8'), "baja": baja, "img_perfil": img_perfil}
     new_client = Cliente(**new_client_data)
     db.add(new_client)
     db.commit()
