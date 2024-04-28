@@ -19,4 +19,5 @@ COPY . .
 EXPOSE 80
 
 # Ejecuta la aplicación
-CMD ["uvicorn", "main:app", "--host", "localhost", "--port", "9090"]
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "80"]
+
