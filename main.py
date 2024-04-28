@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 #from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from decouple import config
+#from decouple import config
 
 from controllers.producto_ctl import *
 from rutas.productos import *
@@ -14,7 +14,7 @@ from rutas.login import *
 app = FastAPI()
 
 origins = [
-    config('FRONTEND_URL')
+    "*"
     ]
 
 app.add_middleware(
