@@ -6,7 +6,7 @@ from typing import Optional
 Base = declarative_base()
 
 class Administrador(Base):
-    __tablename__ = "admin"
+    __tablename__ = "Admin"
     id = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String(255), nullable=False)
     apellido = Column(String(255), nullable=False)

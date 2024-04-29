@@ -1,9 +1,11 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from models.administrador_mod import Administrador
+import bcrypt
 
 def create_admin_db(db: Session, nombre: str, apellido: str, e_mail: str, contrasenia: str, baja: str):
-    new_admin_data = {"nombre": nombre, "apellido": apellido, "e_mail": e_mail, "contrasenia": contrasenia, "baja": baja}
+    hashed_password = bcrypt.hashpw(contrasenia.encode('utf-8'), bcrypt.gensalt())
+    new_admin_data = {"nombre": nombre, "apellido": apellido, "e_mail": e_mail, "contrasenia": hashed_password.decode('utf-8'), "baja": baja}
     new_admin = Administrador(**new_admin_data)
     db.add(new_admin)
     db.commit()

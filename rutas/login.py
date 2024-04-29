@@ -12,10 +12,10 @@ def login_usr(db: Session = Depends(get_db), login_data: dict = Body(...)):
     contrasenia = login_data.get("contrasenia")
 
     if not e_mail or not contrasenia:
-        raise HTTPException(status_code=400, detail="Email and password are required")
+        raise HTTPException(status_code=400, detail="Ingrese el email y la contraseña")
 
     user = LoginController.login(db, e_mail, contrasenia)
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail="Contraseña o email inválido")
 
-    return {"message": "Login successful"}
+    return {user}
