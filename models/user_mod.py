@@ -5,8 +5,8 @@ from typing import Optional
 
 Base = declarative_base()
 
-class Cliente(Base):
-    __tablename__ = "clientes"
+class Usuario(Base):
+    __tablename__ = "usuarios"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     documento = Column(String(15), index=True)
     nombre = Column(String(255) ,index=True)
@@ -15,8 +15,9 @@ class Cliente(Base):
     contrasenia = Column(String(40))
     baja = Column(String(1), nullable=False, default="N")
     img_perfil = Column(String(255))
+    rol = Column(String(1), nullable=False, default="C")
 
-class ClienteCreate(BaseModel):
+class UserCreate(BaseModel):
     documento: str
     nombre: str
     apellido: str
@@ -24,13 +25,13 @@ class ClienteCreate(BaseModel):
     contrasenia: str
     baja: Optional[str] = None
     img_perfil: Optional[str] = None
+    rol: Optional[str] = "C"
     
-    
-class ClienteUpdate(BaseModel):
+class UserUpdate(BaseModel):
     contrasenia: Optional[str] = None
     baja: Optional[str] = None
     e_mail: Optional[str] = None
     img_perfil: Optional[str] = None
     
-class ResultadoActCliente(BaseModel):
+class ResultadoActUser(BaseModel):
     message: str

@@ -1,7 +1,7 @@
 # rutas/login.py
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
-from database import get_db
+from models.database import get_db
 from controllers.login_ctl import LoginController
 
 login = APIRouter()

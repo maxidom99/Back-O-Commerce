@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models.descuento_mod import *
 from controllers.descuento_ctl import *
-from database import get_db
+from models.database import get_db
 from sqlalchemy.orm import Session
 
 descuentos = APIRouter()

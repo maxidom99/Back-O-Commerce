@@ -10,7 +10,7 @@ services:
     depends_on:
       - db
     env_file:
-      - .env
+      - venv/.env
   db:
     image: mysql:latest
     environment:

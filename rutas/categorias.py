@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models.categoria_mod import *
 from controllers.categoria_ctl import *
-from database import get_db
+from models.database import get_db
 from sqlalchemy.orm import Session
 
 categorias = APIRouter()

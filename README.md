@@ -1,0 +1,1 @@
+Se necesita crear un archivo .env en la carpeta venv con la información de acceso a una base de datos para que el programa funcione correctamente.

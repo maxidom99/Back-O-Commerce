@@ -6,9 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from controllers.producto_ctl import *
 from rutas.productos import *
 from rutas.categorias import *
-from rutas.clientes import *
+from rutas.users import *
 from rutas.descuentos import *
-from rutas.administradores import *
 from rutas.login import *
 
 app = FastAPI()
@@ -30,7 +29,6 @@ app.add_middleware(
 
 app.include_router(productos)
 app.include_router(categorias)
-app.include_router(clientes)
+app.include_router(users)
 app.include_router(descuentos)
-app.include_router(administradores)
 app.include_router(login)
