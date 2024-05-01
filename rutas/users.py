@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Body
 from models.user_mod import *
 from controllers.user_ctl import *
 from models.database import get_db
@@ -41,3 +41,17 @@ async def update_user(id: int, user: UserUpdate, db: Session = Depends(get_db)):
         return ResultadoActUser(message="Información actualizada correctamente.")
     else:
         raise HTTPException(status_code=404, detail="No se pudo actualizar el producto")
+
+@users.post("/login")
+def login_usr(db: Session = Depends(get_db), login_data: dict = Body(...)):
+    e_mail = login_data.get("e_mail")
+    contrasenia = login_data.get("contrasenia")
+
+    if not e_mail or not contrasenia:
+        raise HTTPException(status_code=400, detail="Ingrese el email y la contraseña")
+
+    user = LoginController.login(db, e_mail, contrasenia)
+    if not user:
+        raise HTTPException(status_code=401, detail="Contraseña o email inválido")
+
+    return {user}

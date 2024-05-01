@@ -8,7 +8,6 @@ from rutas.productos import *
 from rutas.categorias import *
 from rutas.users import *
 from rutas.descuentos import *
-from rutas.login import *
 
 app = FastAPI()
 
@@ -31,4 +30,3 @@ app.include_router(productos)
 app.include_router(categorias)
 app.include_router(users)
 app.include_router(descuentos)
-app.include_router(login)
