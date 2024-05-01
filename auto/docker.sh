@@ -29,7 +29,7 @@ function Restaurar {
     docker rm backend-db-1
 
     echo " ✅ Back y BD restaurado correctamente ✅ "
-    sleep 2
+    sleep 1.1
 }
 Restaurar
 ;;
@@ -45,7 +45,7 @@ function RestaurarBack {
     clear
     cd ..
     echo " ✅ Back restaurado correctamente ✅"
-    sleep 2
+    sleep 1.1
 } 
 RestaurarBack
 ;;
@@ -55,18 +55,18 @@ RestaurarBack
     docker stop backend-db-1
 echo ""
 echo " 🛑 Backend y BD detenidos 🛑"
-sleep 2
+sleep 1.1
 ;;
 
 0) clear
 echo "Volviendo al menú... 🔙"
-sleep 1.5
+sleep 0.7
 A=0
 ;;
 
 *) clear
 echo "Opción incorrecta."
-sleep 1
+sleep 0.7
 ;;
 esac
 done

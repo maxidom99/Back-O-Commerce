@@ -19,10 +19,10 @@ read -p "Ingrese una opcion: " opc
 case $opc in
 
 1) clear
-sh GitPull.sh
+sh ./auto/GitPull.sh
 ;;
 2) clear
-sh GitPush.sh
+sh ./auto/GitPush.sh
 ;;
 3) clear
 git log -n 5 --pretty=format:"%h - %ad - %an - %s" --date=short
@@ -69,7 +69,7 @@ Revert
 
 0)clear
 echo "Volviendo al menú... 🔙"
-sleep 1.5
+sleep 0.7
 A=0
 ;;
 

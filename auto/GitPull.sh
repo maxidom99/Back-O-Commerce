@@ -2,5 +2,5 @@
 clear
 
 git pull origin main
-sleep 3
+sleep 1.2
 clear

@@ -1,12 +1,12 @@
 #!/bin/bash
 clear
-sudo chmod u+x GitPush.sh
-cd ../../
+chmod u+x GitPush.sh 2>/dev/null
+
 git add .
 git status
-sleep 3
-read -p "¿Nombre del Commit? " commit
+sleep 1.1
+read -p "¿Descripcion del Commit? " commit
 git commit -m "$commit"
 git push -u origin main
-sleep 2
+sleep 1.1
 clear
