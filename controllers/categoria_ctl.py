@@ -2,16 +2,16 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from models.categoria_mod import Categoria
 
-def create_category_db(db: Session, nombre: str, baja: str):
-    new_category_data = {"nombre": nombre, "baja": baja}
+def create_category_db(db: Session, nombre: str, baja: str, img_category: bytes):
+    new_category_data = {"nombre": nombre, "baja": baja, "img_category": img_category}
     new_category = Categoria(**new_category_data)
     db.add(new_category)
     db.commit()
     db.refresh(new_category)
     return new_category
 
-def update_category_db(db: Session, id_cat:int, **data):
-    db_category = db.query(Categoria).filter(or_(Categoria.id_cat == id_cat),Categoria.baja == "N").first()
+def update_category_db(db: Session, id_cat: int, **data):
+    db_category = db.query(Categoria).filter(Categoria.id_cat == id_cat).first()
     if db_category:
         for k, v in data.items():
             if v is not None:
