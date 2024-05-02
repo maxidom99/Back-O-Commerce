@@ -30,3 +30,18 @@ def busqueda_producto(id: int, db: Session):
 def buscar_prd_nombre(db: Session, nombres: str):
     productos = db.query(Producto).filter(or_(Producto.nombres.ilike(f"%{nombres}%")), Producto.baja == "N").all()
     return productos
+
+def get_paginated_products(db: Session, page: int = 1, page_size: int = 10):
+    start_index = (page - 1) * page_size
+    end_index = start_index + page_size
+
+    products = db.query(Producto).filter(Producto.baja == 'N').offset(start_index).limit(page_size).all()
+    total_products = db.query(Producto).filter(Producto.baja == 'N').count()
+
+    return {
+        "products": products,
+        "total_products": total_products,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": -(-total_products // page_size)
+    }

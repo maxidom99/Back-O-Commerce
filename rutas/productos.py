@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from models.producto_mod import *
 from controllers.producto_ctl import *
 from models.database import get_db
+from math import ceil
 from sqlalchemy.orm import Session
 
 productos = APIRouter()
@@ -9,8 +10,16 @@ productos = APIRouter()
 @productos.get("/productos")
 async def busqueda_productos(db: Session = Depends(get_db)):
     productos = db.query(Producto).filter(Producto.baja == 'N').all()
-    #productos = db.query(Producto.id,Producto.nombres, Producto.descripcion, Producto.precios).filter(Producto.baja == 'N').all()
     return productos
+
+@productos.get("/productos_pages")
+async def busqueda_productos(page: int = Query(1, gt=0), page_size: int = Query(10, gt=0), db: Session = Depends(get_db)):
+    """
+    Endpoint para obtener una lista paginada de productos.
+    """
+    result = get_paginated_products(db, page=page, page_size=page_size)
+    total_paginas = result['total_pages']
+    return {"productos": result['products'], "total_productos": result['total_products'], "total_paginas": total_paginas}
 
 @productos.get("/productos/{produ_id}")
 async def busqueda_prd_id(produ_id: int, db: Session = Depends(get_db)):
