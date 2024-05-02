@@ -5,7 +5,7 @@ import re
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def create_user_db(db: Session, documento: str, nombre: str, apellido: str, e_mail: str, contrasenia: str, baja: str, img_perfil: str, rol: str):
     existing_user_email = db.query(Usuario).filter(Usuario.e_mail == e_mail).first()
@@ -62,14 +62,11 @@ def busqueda_user(id: int, db: Session):
 class LoginController:
     @staticmethod
     def login(db: Session, e_mail: str, contrasenia: str):
-            user = db.query(Usuario).filter(and_(Usuario.e_mail == e_mail), Usuario.baja == "N").first()
-            if db.query(Usuario).filter(Usuario.rol == "C"):
-                return user
-            elif db.query(Usuario).filter(Usuario.rol == "A"):
-                return user
-        
+        res = None
+        user = db.query(Usuario).filter(and_(Usuario.e_mail == e_mail), Usuario.baja == "N").first()
+        if user:
+            pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+            if pwd_context.verify(contrasenia, user.contrasenia):
+                res = user
 
-            if not pwd_context.verify(contrasenia, user.contrasenia):
-                return None  # Contraseña incorrecta
-
-            return user  # Usuario autenticado
+        return res
