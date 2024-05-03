@@ -56,19 +56,32 @@ while [ $A -ne 0 ]; do
 		        npm i
                 npm run dev
             }
+            
+            function Back {
+                pwd
+                cd ./venv
+                docker-compose up -d
+                sleep 1
+                echo " 🔌 Back iniciado 🔌"
+                sleep 1
+            }
 
            echo "Seleccione una opción:"
         echo "(1) Abrir solo el 💻 FRONTEND 💻 (npm run dev)"
-        echo "(2) Abrir el 🔌 BACKEND 🔌 y el 💻 FRONTEND 💻 (Docker y npm run dev)"
+        echo "(2) Abrir solo el 🔌 BACKEND 🔌 (Docker)"
+        echo "(3) Abrir el 🔌 BACKEND 🔌 y el 💻 FRONTEND 💻 (Docker y npm run dev)"
         echo ""
         echo "(0) Volver al menu principal..."
         echo ""
-        read -p "Ingrese el número de la opción que desea ejecutar (1 o 2): " var
+        read -p "Ingrese una opción: " var
         if [ "$var" == "1" ]; then
             clear
             WWE
         cd "$directorio_principal"
-            elif [ "$var" == "2" ]; then
+        elif [ "$var" == "2" ]; then
+            clear
+            Back
+        elif [ "$var" == "3" ]; then
             clear
             WWE+Back
         cd "$directorio_principal"
