@@ -7,3 +7,4 @@ mysql-connector-python
 bcrypt
 passlib
 python-dotenv
+python-multipart

@@ -30,6 +30,6 @@ class ProductoUpdate(BaseModel):
     baja: Optional[str] = None
     descripcion: Optional[str] = None
     img_product: Optional[bytes] = None
-    
+
 class ResultadoAct(BaseModel):
     message: str
