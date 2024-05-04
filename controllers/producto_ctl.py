@@ -11,17 +11,18 @@ def create_product_db(db: Session, precios: float, nombres: str, id_cat: int, ba
     db.refresh(new_product)
     return new_product
 
-def update_product_db(db: Session, id:int, **data):
-    db_product = db.query(Producto).filter(Producto.id == id).first()
-    if db_product:
-        for k, v in data.items():
-            if v is not None:
-                setattr(db_product, k, v)
-        
+def update_product_db(db: Session, product_id: int, precios: float, nombres: str, id_cat: int, baja: str, descripcion: str, img_product: bytes):
+    product = db.query(Producto).filter(Producto.id == product_id).first()
+    if product:
+        product.precios = precios
+        product.nombres = nombres
+        product.id_cat = id_cat
+        product.baja = baja
+        product.descripcion = descripcion
+        product.img_product = img_product
         db.commit()
-        db.refresh(db_product)
-        
-        return db_product
+        db.refresh(product)
+        return product
     return None
 
 def busqueda_producto(id: int, db: Session):
