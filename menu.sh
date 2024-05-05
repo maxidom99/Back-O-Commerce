@@ -67,9 +67,9 @@ while [ $A -ne 0 ]; do
             }
 
            echo "Seleccione una opción:"
-        echo "(1) Abrir solo el 💻 FRONTEND 💻 (npm run dev)"
-        echo "(2) Abrir solo el 🔌 BACKEND 🔌 (Docker)"
-        echo "(3) Abrir el 🔌 BACKEND 🔌 y el 💻 FRONTEND 💻 (Docker y npm run dev)"
+        echo "(1) SOLO 💻 FRONTEND 💻 (npm run dev)"
+        echo "(2) SOLO 🔌 BACKEND 🔌 (Docker)"
+        echo "(3) 🔌 BACKEND 🔌 y 💻 FRONTEND 💻 (Docker y npm run dev)"
         echo ""
         echo "(0) Volver al menu principal..."
         echo ""
