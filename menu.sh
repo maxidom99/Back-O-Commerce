@@ -44,7 +44,6 @@ while [ $A -ne 0 ]; do
             }
 
             function WWE+Back {
-                pwd
                 cd ./venv
                 docker-compose up -d
                 sleep 1
@@ -58,7 +57,6 @@ while [ $A -ne 0 ]; do
             }
             
             function Back {
-                pwd
                 cd ./venv
                 docker-compose up -d
                 sleep 1
