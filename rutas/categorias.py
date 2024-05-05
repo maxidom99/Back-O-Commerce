@@ -8,7 +8,7 @@ categorias = APIRouter()
 
 @categorias.get("/categorias")
 async def busqueda_categorias(db: Session = Depends(get_db)):
-    categoria = db.query(Categoria).all()
+    categoria = db.query(Categoria).filter(Categoria.baja == 'N').all()
     return categoria
 
 @categorias.get("/categorias/{categoria_id}")
