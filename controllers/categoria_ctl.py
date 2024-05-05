@@ -10,17 +10,15 @@ def create_category_db(db: Session, nombre: str, baja: str, img_category: bytes)
     db.refresh(new_category)
     return new_category
 
-def update_category_db(db: Session, id_cat: int, **data):
-    db_category = db.query(Categoria).filter(Categoria.id_cat == id_cat).first()
-    if db_category:
-        for k, v in data.items():
-            if v is not None:
-                setattr(db_category, k, v)
-        
+def update_category_db(db: Session, id_cat: int, nombre: str, baja: str, img_category: bytes):
+    category = db.query(Categoria).filter(Categoria.id_cat == id_cat).first()
+    if category:
+        category.nombre = nombre
+        category.baja = baja
+        category.img_category = img_category
         db.commit()
-        db.refresh(db_category)
-        
-        return db_category
+        db.refresh(category)
+        return category
     return None
 
 def busqueda_cat(id_cat: int, db: Session):
