@@ -5,7 +5,7 @@ directorio_principal=$(pwd)
 function show_menu {
     clear
     echo "╔══════════════════════════════════════════════════╗"
-    echo "║   😎 BIENVENIDO AL MENÚ DE AUTOMATIZACIÓN 😎     ║"
+    echo "║   🤖 BIENVENIDO AL MENÚ DE AUTOMATIZACIÓN 🤖     ║"
     echo "╚══════════════════════════════════════════════════╝"
     echo ""
     echo "           Descubra el mundo de O-Commerce          "
