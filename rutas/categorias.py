@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from models.categoria_mod import *
 from controllers.categoria_ctl import *
 from models.database import get_db
@@ -26,9 +26,12 @@ async def busqueda_cat_nombre(nombre: str, db: Session = Depends(get_db)):
     else:
         raise HTTPException(status_code=404, detail="Categoría no encontrada.")
 
-@categorias.post("/creando_categoria", response_model=CategoryCreate)
+@categorias.post("/creando_categoria", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def create_category(category: CategoryCreate, db: Session = Depends(get_db)):
-    return create_category_db(db, **category.dict())
+    response, status_code = create_category_db(db, category)
+    if status_code != 201:
+        raise HTTPException(status_code=status_code, detail=response["error"])
+    return response
 
 @categorias.put("/mod_category/{categoria_id}", response_model=ResultadoActCat)
 async def update_category(categoria_id: int, category: CategoryUpdate, db: Session = Depends(get_db)):

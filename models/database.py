@@ -6,7 +6,9 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+#El comentado es para agarrar el backend del Docker
+# DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = 'mysql+mysqlconnector://root:root@localhost:3306/ecommerce'
 
 engine = create_engine(DATABASE_URL)
 

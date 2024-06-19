@@ -1,15 +1,33 @@
-from sqlalchemy.orm import Session
 from fastapi import UploadFile
-from models.producto_mod import Producto
+from models.producto_mod import Producto, ProductoCreate
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-def create_product_db(db: Session, precios: float, nombres: str, id_cat: int, baja: str, descripcion: str, img_product: bytes):
-    new_product_data = {"precios": precios, "nombres": nombres, "id_cat": id_cat, "baja": baja, "descripcion": descripcion, "img_product": img_product}
+from typing import Optional
+
+def create_product_db(db: Session, producto: ProductoCreate):
+    new_product_data = {
+        "precios": producto.precios,
+        "nombres": producto.nombres,
+        "id_cat": producto.id_cat,
+        "baja": producto.baja,
+        "descripcion": producto.descripcion,
+        "img_product": producto.img_product
+    }
     new_product = Producto(**new_product_data)
-    db.add(new_product)
-    db.commit()
-    db.refresh(new_product)
-    return new_product
+    
+    try:
+        db.add(new_product)
+        db.commit()
+        db.refresh(new_product)
+        return {"message": "Producto creado exitosamente", "product": new_product}, 201
+    except IntegrityError as e:
+        db.rollback()
+        if "Duplicate entry" in str(e.orig):
+            return {"error": "Ya existe un producto con el mismo nombre"}, 400
+        else:
+            raise e
 
 def update_product_db(db: Session, product_id: int, precios: float, nombres: str, id_cat: int, baja: str, descripcion: str, img_product: bytes):
     product = db.query(Producto).filter(Producto.id == product_id).first()

@@ -40,7 +40,7 @@ function RestaurarBack {
     cd ./venv
     docker stop backend-app-1
     docker rm backend-app-1
-    docker rmi backend-app
+    docker rmi backend-app-1
     docker-compose up -d
     clear
     cd ..

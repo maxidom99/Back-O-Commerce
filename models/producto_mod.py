@@ -19,9 +19,21 @@ class ProductoCreate(BaseModel):
     precios: float
     nombres: str
     id_cat: int
-    baja: Optional[str] = None
+    baja: Optional[str] = "N"
     descripcion: str
     img_product: Optional[bytes] = None
+    
+class ProductoResponse(BaseModel):
+    id: int
+    precios: float
+    nombres: str
+    id_cat: int
+    baja: Optional[str] = "N"
+    descripcion: str
+    img_product: Optional[bytes] = None
+
+    class Config:
+        orm_mode = True
     
 class ProductoUpdate(BaseModel):
     precios: Optional[float] = None

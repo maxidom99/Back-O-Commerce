@@ -14,6 +14,12 @@ class Categoria(Base):
     
 class CategoryCreate(BaseModel):
     nombre: str
+    baja: Optional[str] = "N"
+    img_category: Optional[bytes] = None
+    
+class CategoryResponse(BaseModel):
+    id_cat: int
+    nombre: str
     baja: Optional[str] = None
     img_category: Optional[bytes] = None
 

@@ -1,36 +1,38 @@
 import bcrypt
 from models.user_mod import Usuario
+from models.user_mod import UserCreate
 from passlib.context import CryptContext
 import re
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
+from typing import Optional
 
-def create_user_db(db: Session, documento: str, nombre: str, apellido: str, e_mail: str, contrasenia: str, baja: str, img_perfil: bytes, rol: str):
-    existing_user_email = db.query(Usuario).filter(Usuario.e_mail == e_mail).first()
+def create_user_db(db: Session, user: UserCreate):
+    existing_user_email = db.query(Usuario).filter(Usuario.e_mail == user.e_mail).first()
     if existing_user_email:
-        return None, "El correo electrónico ya está registrado"
+        return {"error": "El correo electrónico ya está registrado"}, 400
 
-    existing_user_doc = db.query(Usuario).filter(Usuario.documento == documento).first()
+    existing_user_doc = db.query(Usuario).filter(Usuario.documento == user.documento).first()
     if existing_user_doc:
-        return None, "El documento ya está registrado"
+        return {"error": "El documento ya está registrado"}, 400
 
-    if not re.match(r'^[a-zA-Z]{2,}@[a-zA-Z]{2,}\.[a-zA-Z]{2,}$', e_mail):
-        return None, "El correo electrónico no cumple con el formato requerido"
+    if not re.match(r'^[a-zA-Z]{2,}@[a-zA-Z]{2,}\.[a-zA-Z]{2,}$', user.e_mail):
+        return {"error": "El correo electrónico no cumple con el formato requerido"}, 400
 
-    if not re.match(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_+=<>,.?/:;{}[\]|~])(?!.*\s).{8,}$', contrasenia):
-        return None, "La contraseña debe tener al menos 8 caracteres y contener al menos un número, una letra mayúscula, una letra minúscula y un símbolo"
+    if not re.match(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_+=<>,.?/:;{}[\]|~])(?!.*\s).{8,}$', user.contrasenia):
+        return {"error": "La contraseña debe tener al menos 8 caracteres y contener al menos un número, una letra mayúscula, una letra minúscula y un símbolo"}, 400
 
-    hashed_password = bcrypt.hashpw(contrasenia.encode('utf-8'), bcrypt.gensalt())
+    hashed_password = bcrypt.hashpw(user.contrasenia.encode('utf-8'), bcrypt.gensalt())
 
     new_user_data = {
-        "documento": documento,
-        "nombre": nombre,
-        "apellido": apellido,
-        "e_mail": e_mail,
+        "documento": user.documento,
+        "nombre": user.nombre,
+        "apellido": user.apellido,
+        "e_mail": user.e_mail,
         "contrasenia": hashed_password.decode('utf-8'),
-        "baja": baja,
-        "img_perfil": img_perfil,
-        "rol": rol
+        "baja": user.baja,
+        "img_perfil": user.img_perfil,
+        "rol": user.rol
     }
 
     new_user = Usuario(**new_user_data)
@@ -38,26 +40,33 @@ def create_user_db(db: Session, documento: str, nombre: str, apellido: str, e_ma
     db.commit()
     db.refresh(new_user)
 
-    return new_user, "Usuario creado exitosamente"
+    return {"message": "Usuario creado exitosamente", "user": new_user}, 201
 
 
-def update_user_db(db: Session, id: int, documento: str, nombre: str, apellido: str, e_mail: str, contrasenia: str, baja: str, img_perfil: bytes, rol: str):
+def update_user_db(db: Session, id: int, documento: Optional[str], nombre: Optional[str], apellido: Optional[str], e_mail: Optional[str], contrasenia: Optional[str], baja: Optional[str], img_perfil: Optional[bytes], rol: Optional[str]):
     user = db.query(Usuario).filter(or_(Usuario.id == id), Usuario.baja == "N").first()
     if user:
-        user.documento = documento
-        user.nombre = nombre
-        user.apellido = apellido
-        if not re.match(r'^[a-zA-Z]{2,}@[a-zA-Z]{2,}\.[a-zA-Z]{2,}$', e_mail):
-            return None, "El correo electrónico no cumple con el formato requerido"
-        user.e_mail = e_mail
-        if contrasenia:
+        if documento is not None:
+            user.documento = documento
+        if nombre is not None:
+            user.nombre = nombre
+        if apellido is not None:
+            user.apellido = apellido
+        if e_mail is not None:
+            if not re.match(r'^[a-zA-Z]{2,}@[a-zA-Z]{2,}\.[a-zA-Z]{2,}$', e_mail):
+                return None, "El correo electrónico no cumple con el formato requerido"
+            user.e_mail = e_mail
+        if contrasenia is not None:
             if not re.match(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()-_+=<>,.?/:;{}[\]|~])(?!.*\s).{8,}$', contrasenia):
                 return None, "La contraseña debe tener al menos 8 caracteres y contener al menos un número, una letra mayúscula, una letra minúscula y un símbolo"
             hashed_password = bcrypt.hashpw(contrasenia.encode('utf-8'), bcrypt.gensalt())
             user.contrasenia = hashed_password.decode('utf-8')
-        user.baja = baja
-        user.img_perfil = img_perfil
-        user.rol = rol
+        if baja is not None:
+            user.baja = baja
+        if img_perfil is not None:
+            user.img_perfil = img_perfil
+        if rol is not None:
+            user.rol = rol
         db.commit()
         db.refresh(user)
         return user, "Usuario actualizado exitosamente"
