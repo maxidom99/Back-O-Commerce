@@ -1,5 +1,5 @@
 from fastapi import UploadFile
-from models.producto_mod import Producto, ProductoCreate
+from models.producto_mod import Producto, ProductoCreate, Ventas, VentaCreate
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -28,6 +28,27 @@ def create_product_db(db: Session, producto: ProductoCreate):
             return {"error": "Ya existe un producto con el mismo nombre"}, 400
         else:
             raise e
+        
+def create_sell_db(db: Session, venta: VentaCreate):
+    new_sell_data = {
+        "precios": venta.precios,
+        "nombres": venta.nombres,
+        "id_usuario": venta.id_usuario,
+        "img_product": venta.img_product
+    }
+    new_sell = Ventas(**new_sell_data)
+    
+    try:
+        db.add(new_sell)
+        db.commit()
+        db.refresh(new_sell)
+        return {"message": "Venta exitosa", "venta": new_sell}, 201
+    except IntegrityError as e:
+        db.rollback()
+        if "Duplicate entry" in str(e.orig):
+            return {"error": "Venta duplicada"}, 400
+        else:
+            raise e
 
 def update_product_db(db: Session, product_id: int, precios: float, nombres: str, id_cat: int, baja: str, descripcion: str, img_product: bytes):
     product = db.query(Producto).filter(Producto.id == product_id).first()
@@ -43,12 +64,21 @@ def update_product_db(db: Session, product_id: int, precios: float, nombres: str
         return product
     return None
 
+def purchased_product(id: int, db: Session, precios: float, nombres:str, img_product: bytes):
+    product = db.query(Producto).filter(Producto.id == id).first()
+    if product:
+        product.precios = precios
+        product.nombres = nombres
+        product.img_product = img_product
+    return db.query(Producto).filter(or_(Producto.id == id, Producto.baja == "N")).all()
+
 def busqueda_producto(id: int, db: Session):
     return db.query(Producto).filter(or_(Producto.id == id, Producto.baja == "N")).first()
 
 def buscar_prd_nombre(db: Session, nombres: str):
     productos = db.query(Producto).filter(or_(Producto.nombres.ilike(f"%{nombres}%")), Producto.baja == "N").all()
     return productos
+
 
 def get_paginated_products(db: Session, page: int = 1, page_size: int = 10):
     start_index = (page - 1) * page_size

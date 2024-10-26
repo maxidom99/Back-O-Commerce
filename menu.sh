@@ -44,7 +44,7 @@ while [ $A -ne 0 ]; do
             }
 
             function WWE+Back {
-                cd ./venv
+                cd ./venv/
                 docker-compose up -d
                 sleep 1
                 echo " 🔌 Back iniciado 🔌"
