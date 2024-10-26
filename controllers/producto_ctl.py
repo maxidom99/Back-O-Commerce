@@ -31,10 +31,9 @@ def create_product_db(db: Session, producto: ProductoCreate):
         
 def create_sell_db(db: Session, venta: VentaCreate):
     new_sell_data = {
-        "precios": venta.precios,
-        "nombres": venta.nombres,
+        "fecha_venta": venta.fecha_venta,
+        "id_producto": venta.id_producto,
         "id_usuario": venta.id_usuario,
-        "img_product": venta.img_product
     }
     new_sell = Ventas(**new_sell_data)
     

@@ -7,7 +7,7 @@ from models.database import get_db
 from sqlalchemy.orm import Session
 
 productos = APIRouter()
-sdk = mp.SDK("APP_USR-582939d7-f527-48a3-a7cc-c93d26693e1c")
+sdk = mp.SDK("APP_USR-6185876624553497-102612-be1ed5d5e1701dad5647b80780439677-1880004658")
 
 @productos.get("/productos")
 async def busqueda_productos(db: Session = Depends(get_db)):
@@ -43,8 +43,8 @@ def create_product(producto: ProductoCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status_code, detail=response["error"])
     return response["product"]
 
-@productos.post("/comprar_ahora/{id_producto}")
-def comprar_ahora(id_producto: int, db: Session = Depends(get_db), id_usuario: int = 1):
+@productos.post("/comprar_ahora/{id_producto}/{id_usuario}")
+def comprar_ahora(id_producto: int, id_usuario: int, db: Session = Depends(get_db)):
     # Buscar el producto en la base de datos
     producto = db.query(Producto).filter(Producto.id == id_producto).first()
     
@@ -57,23 +57,23 @@ def comprar_ahora(id_producto: int, db: Session = Depends(get_db), id_usuario: i
         id_usuario=id_usuario,
         id_producto=id_producto
     )
-    db.add(nueva_venta)
-    db.commit()
-    db.refresh(nueva_venta)
+    
+    create_sell_db(db, nueva_venta)
 
     # Crear la preferencia de pago en Mercado Pago
     preference_data = {
         "items": [
             {
+                "id": producto.id,
+                "category_id": producto.id_cat,
+                "description": producto.descripcion,
+                "unit_price": 2200,
                 "title": producto.nombres,
                 "quantity": 1,
                 "unit_price": float(producto.precios),
-                "currency_id": "ARS"
+                "currency_id": "UYU"
             }
         ],
-        "payer": {
-            "email": "pedro@mail.com"
-        },
         "back_urls": {
             "success": "https://tu-sitio.com/success",
             "failure": "https://tu-sitio.com/failure",
@@ -91,28 +91,27 @@ def comprar_ahora(id_producto: int, db: Session = Depends(get_db), id_usuario: i
         print("Error en la respuesta de Mercado Pago:", preference_response)
         raise HTTPException(status_code=400, detail="Error al crear la preferencia de pago")
 
-    # Devolver la URL para redirigir al usuario a la página de pago
-    return {"init_point": preference_response["response"]["init_point"]}
+    return {"init_point": preference_response["response"]['init_point']}
 
-@productos.post("/webhook")
-async def webhook(data: dict, db: Session = Depends(get_db)):
-    payment_id = data.get("data", {}).get("id")
+# @productos.post("/webhook")
+# async def webhook(data: dict, db: Session = Depends(get_db)):
+#     payment_id = data.get("data", {}).get("id")
 
-    # Consultar el estado del pago en Mercado Pago
-    payment_info = mp.payment().get(payment_id)
+#     # Consultar el estado del pago en Mercado Pago
+#     payment_info = mp.payment().get(payment_id)
 
-    if payment_info["status"] == 200:
-        # Extraer el estado del pago
-        status = payment_info["response"]["status"]
-        id_producto = payment_info["response"]["additional_info"]["items"][0]["id"]
+#     if payment_info["status"] == 200:
+#         # Extraer el estado del pago
+#         status = payment_info["response"]["status"]
+#         id_producto = payment_info["response"]["additional_info"]["items"][0]["id"]
 
-        # Actualizar la venta en la base de datos
-        venta = db.query(Ventas).filter(Ventas.id_producto == id_producto).first()
-        if venta:
-            venta.estado = status  # Actualiza el estado de la venta (ej. "approved")
-            db.commit()
+#         # Actualizar la venta en la base de datos
+#         venta = db.query(Ventas).filter(Ventas.id_producto == id_producto).first()
+#         if venta:
+#             venta.estado = status  # Actualiza el estado de la venta (ej. "approved")
+#             db.commit()
     
-    return {"status": "ok"}
+#     return {"status": "ok"}
     
 
 @productos.put("/mod_produ/{id}", response_model=ResultadoAct)
